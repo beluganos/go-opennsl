@@ -15,9 +15,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package sal
+package opennsl
 
 /*
-#cgo pkg-config: libopennsl
+#include <opennsl/tx.h>
 */
 import "C"
+
+//
+// opennsl_tx
+//
+func Tx(unit int, pkt *Pkt) error {
+	rc := C.opennsl_tx(C.int(unit), pkt.C(), nil)
+	return ParseError(rc)
+}
+
+func (v *Pkt) Tx(unit int) error {
+	return Tx(unit, v)
+}

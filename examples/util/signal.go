@@ -15,9 +15,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package sal
+package util
 
-/*
-#cgo pkg-config: libopennsl
-*/
-import "C"
+import (
+	"os"
+	"os/signal"
+
+	log "github.com/sirupsen/logrus"
+)
+
+func WatchSignal(done chan struct{}) {
+
+	ch := make(chan os.Signal, 1)
+	defer close(ch)
+
+	signal.Notify(ch, os.Interrupt)
+	<-ch
+
+	log.Infof("Interrupt signal.")
+
+	close(done)
+}

@@ -15,9 +15,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package sal
+package opennsl
 
 /*
-#cgo pkg-config: libopennsl
+#include <opennsl/switch.h>
 */
 import "C"
+
+//
+// SwitchPktTraceLookup
+//
+type SwitchPktTraceLookup C.opennsl_switch_pkt_trace_lookup_t
+
+//
+// SwitchPktTraceLookupResult
+//
+type SwitchPktTraceLookupResult C.opennsl_switch_pkt_trace_lookup_result_t
+
+//
+// SwitchPktTraceInfo
+//
+type SwitchPktTraceInfo C.opennsl_switch_pkt_trace_info_t
+
+//
+// TODO: implement
+//

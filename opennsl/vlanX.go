@@ -15,9 +15,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package sal
+package opennsl
 
 /*
-#cgo pkg-config: libopennsl
+#include <stdlib.h>
+#include <opennsl/vlanX.h>
 */
 import "C"
+
+//
+// VlanProtocolPacketCtrl
+//
+type VlanProtocolPacketCtrl C.opennsl_vlan_protocol_packet_ctrl_t
+
+func (v *VlanProtocolPacketCtrl) C() *C.opennsl_vlan_protocol_packet_ctrl_t {
+	return (*C.opennsl_vlan_protocol_packet_ctrl_t)(v)
+}
+
+//
+// VlanControlVlan
+//
+type VlanControlVlan C.opennsl_vlan_control_vlan_t
+
+func (v *VlanControlVlan) C() *C.opennsl_vlan_control_vlan_t {
+	return (*C.opennsl_vlan_control_vlan_t)(v)
+}

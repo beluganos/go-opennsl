@@ -15,9 +15,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package sal
+package opennsl
 
 /*
-#cgo pkg-config: libopennsl
+#include <opennsl/types.h>
+#include <opennsl/stat.h>
 */
 import "C"
+
+//
+// Stat
+//
+func StatInit(unit int) error {
+	rc := C.opennsl_stat_init(C.int(unit))
+	return ParseError(rc)
+}
+
+func StatClear(unit int, port Port) error {
+	rc := C.opennsl_stat_clear(C.int(unit), port.C())
+	return ParseError(rc)
+}
+
+func StatSync(unit int) error {
+	rc := C.opennsl_stat_sync(C.int(unit))
+	return ParseError(rc)
+}

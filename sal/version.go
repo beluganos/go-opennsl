@@ -18,6 +18,15 @@
 package sal
 
 /*
-#cgo pkg-config: libopennsl
+#include <stdlib.h>
+#include <sal/version.h>
 */
 import "C"
+
+func VersionGet() string {
+	c_ver := C.opennsl_version_get()
+	if c_ver == nil {
+		return ""
+	}
+	return C.GoString(c_ver)
+}

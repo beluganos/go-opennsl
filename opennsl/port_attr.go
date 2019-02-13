@@ -1,0 +1,76 @@
+// -*- coding: utf-8 -*-
+
+// Copyright (C) 2018 Nippon Telegraph and Telephone Corporation.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//    http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+// implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+package opennsl
+
+/*
+#include <opennsl/types.h>
+#include <opennsl/port.h>
+*/
+import "C"
+
+type PortAttr C.uint32
+
+func (v PortAttr) C() C.uint32 {
+	return C.uint32(v)
+}
+
+func NewPortAttr(attrs ...PortAttr) PortAttr {
+	v := PORT_ATTR_NONE
+	for _, attr := range attrs {
+		v |= attr
+	}
+	return v
+}
+
+const (
+	PORT_ATTR_NONE               PortAttr = 0
+	PORT_ATTR_ENABLE_MASK        PortAttr = C.OPENNSL_PORT_ATTR_ENABLE_MASK
+	PORT_ATTR_LINKSTAT_MASK      PortAttr = C.OPENNSL_PORT_ATTR_LINKSTAT_MASK
+	PORT_ATTR_AUTONEG_MASK       PortAttr = C.OPENNSL_PORT_ATTR_AUTONEG_MASK
+	PORT_ATTR_SPEED_MASK         PortAttr = C.OPENNSL_PORT_ATTR_SPEED_MASK
+	PORT_ATTR_DUPLEX_MASK        PortAttr = C.OPENNSL_PORT_ATTR_DUPLEX_MASK
+	PORT_ATTR_LINKSCAN_MASK      PortAttr = C.OPENNSL_PORT_ATTR_LINKSCAN_MASK
+	PORT_ATTR_LEARN_MASK         PortAttr = C.OPENNSL_PORT_ATTR_LEARN_MASK
+	PORT_ATTR_DISCARD_MASK       PortAttr = C.OPENNSL_PORT_ATTR_DISCARD_MASK
+	PORT_ATTR_VLANFILTER_MASK    PortAttr = C.OPENNSL_PORT_ATTR_VLANFILTER_MASK
+	PORT_ATTR_UNTAG_PRI_MASK     PortAttr = C.OPENNSL_PORT_ATTR_UNTAG_PRI_MASK
+	PORT_ATTR_UNTAG_VLAN_MASK    PortAttr = C.OPENNSL_PORT_ATTR_UNTAG_VLAN_MASK
+	PORT_ATTR_STP_STATE_MASK     PortAttr = C.OPENNSL_PORT_ATTR_STP_STATE_MASK
+	PORT_ATTR_PFM_MASK           PortAttr = C.OPENNSL_PORT_ATTR_PFM_MASK
+	PORT_ATTR_LOOPBACK_MASK      PortAttr = C.OPENNSL_PORT_ATTR_LOOPBACK_MASK
+	PORT_ATTR_PHY_MASTER_MASK    PortAttr = C.OPENNSL_PORT_ATTR_PHY_MASTER_MASK
+	PORT_ATTR_INTERFACE_MASK     PortAttr = C.OPENNSL_PORT_ATTR_INTERFACE_MASK
+	PORT_ATTR_PAUSE_TX_MASK      PortAttr = C.OPENNSL_PORT_ATTR_PAUSE_TX_MASK
+	PORT_ATTR_PAUSE_RX_MASK      PortAttr = C.OPENNSL_PORT_ATTR_PAUSE_RX_MASK
+	PORT_ATTR_PAUSE_MAC_MASK     PortAttr = C.OPENNSL_PORT_ATTR_PAUSE_MAC_MASK
+	PORT_ATTR_LOCAL_ADVERT_MASK  PortAttr = C.OPENNSL_PORT_ATTR_LOCAL_ADVERT_MASK
+	PORT_ATTR_REMOTE_ADVERT_MASK PortAttr = C.OPENNSL_PORT_ATTR_REMOTE_ADVERT_MASK
+	PORT_ATTR_ENCAP_MASK         PortAttr = C.OPENNSL_PORT_ATTR_ENCAP_MASK
+	PORT_ATTR_RATE_MCAST_MASK    PortAttr = C.OPENNSL_PORT_ATTR_RATE_MCAST_MASK
+	PORT_ATTR_RATE_BCAST_MASK    PortAttr = C.OPENNSL_PORT_ATTR_RATE_BCAST_MASK
+	PORT_ATTR_RATE_DLFBC_MASK    PortAttr = C.OPENNSL_PORT_ATTR_RATE_DLFBC_MASK
+	PORT_ATTR_SPEED_MAX_MASK     PortAttr = C.OPENNSL_PORT_ATTR_SPEED_MAX_MASK
+	PORT_ATTR_ABILITY_MASK       PortAttr = C.OPENNSL_PORT_ATTR_ABILITY_MASK
+	PORT_ATTR_FRAME_MAX_MASK     PortAttr = C.OPENNSL_PORT_ATTR_FRAME_MAX_MASK
+	PORT_ATTR_MDIX_MASK          PortAttr = C.OPENNSL_PORT_ATTR_MDIX_MASK
+	PORT_ATTR_MDIX_STATUS_MASK   PortAttr = C.OPENNSL_PORT_ATTR_MDIX_STATUS_MASK
+	PORT_ATTR_MEDIUM_MASK        PortAttr = C.OPENNSL_PORT_ATTR_MEDIUM_MASK
+	PORT_ATTR_FAULT_MASK         PortAttr = C.OPENNSL_PORT_ATTR_FAULT_MASK
+	PORT_ATTR2_PORT_ABILITY      PortAttr = C.OPENNSL_PORT_ATTR2_PORT_ABILITY
+	PORT_ATTR_ALL_MASK           PortAttr = C.OPENNSL_PORT_ATTR_ALL_MASK
+)

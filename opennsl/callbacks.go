@@ -17,24 +17,43 @@
 
 package opennsl
 
-/*
-#cgo pkg-config: libopennsl
-*/
-import "C"
-
-const (
-	TRUE  = 1
-	FALSE = 0
+import (
+	"sync"
 )
 
-func BoolToFlag(b bool) int {
-	if b {
-		return TRUE
-	}
-
-	return FALSE
+type CallbackMap struct {
+	Counter   uint64
+	Callbacks map[uint64]interface{}
+	Mutex     sync.Mutex
 }
 
-func FlagToBool(v int) bool {
-	return (v != FALSE)
+func NewCallbackMap() *CallbackMap {
+	return &CallbackMap{
+		Counter:   0,
+		Callbacks: make(map[uint64]interface{}),
+	}
+}
+
+func (m *CallbackMap) Add(cb interface{}) uint64 {
+	m.Mutex.Lock()
+	defer m.Mutex.Unlock()
+
+	m.Counter++
+	m.Callbacks[m.Counter] = cb
+	return m.Counter
+}
+
+func (m *CallbackMap) Del(n uint64) {
+	m.Mutex.Lock()
+	defer m.Mutex.Unlock()
+
+	delete(m.Callbacks, n)
+}
+
+func (m *CallbackMap) Get(n uint64) (interface{}, bool) {
+	m.Mutex.Lock()
+	defer m.Mutex.Unlock()
+
+	cb, ok := m.Callbacks[n]
+	return cb, ok
 }
