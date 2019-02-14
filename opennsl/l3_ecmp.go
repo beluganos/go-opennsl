@@ -37,8 +37,8 @@ func (v L3EgressEcmpID) C() C.opennsl_if_t {
 	return C.opennsl_if_t(v)
 }
 
-func (v L3EgressEcmpID) IfaceID() L3IfaceID {
-	return L3IfaceID(v)
+func (v L3EgressEcmpID) L3EgressID() L3EgressID {
+	return L3EgressID(v)
 }
 
 const L3_EGRESS_ECMP = L3EgressEcmpID(IFACE_NONE)

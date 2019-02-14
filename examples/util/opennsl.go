@@ -214,9 +214,11 @@ func NewL3IfaceObjUntagged(unit int, port opennsl.Port, vid opennsl.Vlan, mac ne
 }
 
 func newL3IfaceObj(unit int, port opennsl.Port, vid opennsl.Vlan, mac net.HardwareAddr, untag bool) (*opennsl.L3Iface, error) {
-	if err := addVlanPort(unit, vid, port, untag); err != nil {
-		log.Errorf("NewL3Iface error. %s", err)
-		return nil, err
+	if port != 0 {
+		if err := addVlanPort(unit, vid, port, untag); err != nil {
+			log.Errorf("NewL3Iface error. %s", err)
+			return nil, err
+		}
 	}
 
 	l3if := opennsl.NewL3Iface()
@@ -248,6 +250,28 @@ func NewL3Egress(unit int, outPort opennsl.Port, vid opennsl.Vlan, iface opennsl
 	}
 
 	log.Debugf("NewL3Egress port %d, vid %d, iface %d, mac %s, l3egr %d", outPort, vid, iface, nh, l3egrId)
+
+	return l3egrId, nil
+}
+
+func NewL3EgressTrunk(unit int, trunk opennsl.Trunk, vid opennsl.Vlan, iface opennsl.L3IfaceID, nh net.HardwareAddr, flags ...opennsl.L3Flags) (opennsl.L3EgressID, error) {
+	l3eg := opennsl.NewL3Egress()
+	flags = append(flags, opennsl.L3_TGID)
+	l3eg.SetIfaceID(iface)
+	l3eg.SetMAC(nh)
+	l3eg.SetVID(vid)
+	l3eg.SetTrunk(trunk)
+	if len(flags) > 0 {
+		l3eg.SetFlags(opennsl.NewL3Flags(flags...))
+	}
+
+	l3egrId, err := opennsl.L3_EGRESS.Create(unit, opennsl.NewL3Flags(flags...), l3eg)
+	if err != nil {
+		log.Errorf("NewL3Egress error. %s", err)
+		return 0, err
+	}
+
+	log.Debugf("NewL3Egress trunk %d, vid %d, iface %d, mac %s, l3egr %d", trunk, vid, iface, nh, l3egrId)
 
 	return l3egrId, nil
 }
