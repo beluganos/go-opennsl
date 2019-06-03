@@ -28,7 +28,7 @@ import (
 	"unsafe"
 )
 
-type L2AddrCallback func(int, *L2Addr, int)
+type L2AddrCallback func(int, *L2Addr, L2CallbackOper)
 
 var l2addrCallbacks = map[int]L2AddrCallback{}
 
@@ -49,7 +49,7 @@ func unregisterL2AddrCallback(unit int) {
 func go_opennsl_l2_addr_cb(c_unit C.int, c_l2addr *C.opennsl_l2_addr_t, c_operation C.int, c_userdata unsafe.Pointer) {
 	unit := int(c_unit)
 	if callback, ok := l2addrCallbacks[unit]; ok {
-		callback(unit, (*L2Addr)(c_l2addr), int(c_operation))
+		callback(unit, (*L2Addr)(c_l2addr), L2CallbackOper(c_operation))
 	}
 }
 
