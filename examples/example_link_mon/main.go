@@ -18,6 +18,7 @@
 package main
 
 import (
+	"flag"
 	"os"
 	"os/signal"
 	"time"
@@ -28,6 +29,24 @@ import (
 
 	log "github.com/sirupsen/logrus"
 )
+
+type Args struct {
+	Fec     string
+	Verbose bool
+}
+
+func (a *Args) Parse() {
+	flag.StringVar(&a.Fec, "fec", "", "fec on/off.")
+	flag.BoolVar(&a.Verbose, "v", false, "show detail message.")
+
+	flag.Parse()
+}
+
+func NewArgs() *Args {
+	args := &Args{}
+	args.Parse()
+	return args
+}
 
 func watchSignal(done chan struct{}) {
 
@@ -42,8 +61,53 @@ func watchSignal(done chan struct{}) {
 	close(done)
 }
 
+func setFec(unit int, fec string) error {
+
+	var fecval uint32
+
+	switch fec {
+	case "on":
+		log.Infof("FEC ON")
+		fecval = opennsl.PORT_PHY_CONTROL_FEC_ON
+
+	case "off":
+		log.Infof("FEC OFF")
+		fecval = opennsl.PORT_PHY_CONTROL_FEC_OFF
+
+	default:
+		log.Debugf("FEC not changed.")
+		return nil
+	}
+
+	pcfg, err := opennsl.PortConfigGet(unit)
+	if err != nil {
+		return err
+	}
+
+	pbmp, _ := pcfg.PBmp(opennsl.PORT_CONFIG_E)
+
+	return pbmp.Each(func(port opennsl.Port) error {
+		err := port.PhyControlSet(
+			unit,
+			opennsl.PORT_PHY_CONTROL_FORWARD_ERROR_CORRECTION,
+			fecval,
+		)
+		if err != nil {
+			log.Errorf("PhyControlSet(FEC) error. port %d %s", port, err)
+		} else {
+			log.Infof("PhyControlSet(FEC) ok. port %d %s", port, fec)
+		}
+
+		return nil
+	})
+}
+
 func main() {
-	log.SetLevel(log.DebugLevel)
+	args := NewArgs()
+
+	if args.Verbose {
+		log.SetLevel(log.DebugLevel)
+	}
 
 	unit := 0
 
@@ -61,6 +125,8 @@ func main() {
 	}
 
 	log.Infof("PortDefaultConfig ok.")
+
+	setFec(unit, args.Fec)
 
 	if err := opennsl.LinkscanRegister(unit, "test", func(unit int, key string, port opennsl.Port, portInfo *opennsl.PortInfo) {
 		log.Infof("Link Status Changed. port:%d status:%s", port, portInfo.LinkStatus())
