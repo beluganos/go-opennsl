@@ -24,6 +24,49 @@ package opennsl
 import "C"
 
 //
+// PortPhyControl
+//
+type PortPhyControl C.opennsl_port_phy_control_t
+
+func (v PortPhyControl) C() C.opennsl_port_phy_control_t {
+	return C.opennsl_port_phy_control_t(v)
+}
+
+const (
+	PORT_PHY_CONTROL_FORWARD_ERROR_CORRECTION           PortPhyControl = C.OPENNSL_PORT_PHY_CONTROL_FORWARD_ERROR_CORRECTION
+	PORT_PHY_CONTROL_SOFTWARE_RX_LOS                    PortPhyControl = C.OPENNSL_PORT_PHY_CONTROL_SOFTWARE_RX_LOS
+	PORT_PHY_CONTROL_SOFTWARE_RX_LOS_LINK_WAIT_TIMER_US PortPhyControl = C.OPENNSL_PORT_PHY_CONTROL_SOFTWARE_RX_LOS_LINK_WAIT_TIMER_US
+	PORT_PHY_CONTROL_SOFTWARE_RX_LOS_RESTART_TIMER_US   PortPhyControl = C.OPENNSL_PORT_PHY_CONTROL_SOFTWARE_RX_LOS_RESTART_TIMER_US
+)
+
+const (
+	// PORT_PHY_CONTROL_FORWARD_ERROR_CORRECTION
+	PORT_PHY_CONTROL_FEC_OFF  = C.OPENNSL_PORT_PHY_CONTROL_FEC_OFF
+	PORT_PHY_CONTROL_FEC_ON   = C.OPENNSL_PORT_PHY_CONTROL_FEC_ON
+	PORT_PHY_CONTROL_FEC_AUTO = C._SHR_PORT_PHY_CONTROL_FEC_AUTO
+	// PORT_PHY_CONTROL_SOFTWARE_RX_LOS
+	PORT_PHY_CONTROL_RX_LOS_NONE     = C.OPENNSL_PORT_PHY_CONTROL_RX_LOS_NONE
+	PORT_PHY_CONTROL_RX_LOS_SOFTWARE = C.OPENNSL_PORT_PHY_CONTROL_RX_LOS_SOFTWARE
+	PORT_PHY_CONTROL_RX_LOS_FIRMWARE = C.OPENNSL_PORT_PHY_CONTROL_RX_LOS_FIRMWARE
+)
+
+func PortPhyControlSet(unit int, port Port, ctrl PortPhyControl, value uint32) error {
+	rc := C.opennsl_port_phy_control_set(C.int(unit), port.C(), ctrl.C(), C.uint32(value))
+	return ParseError(rc)
+}
+
+func PortPhyControlGet(unit int, port Port, ctrl PortPhyControl) (uint32, error) {
+	c_val := C.uint32(0)
+
+	rc := C.opennsl_port_phy_control_get(C.int(unit), port.C(), ctrl.C(), &c_val)
+	return uint32(c_val), ParseError(rc)
+}
+
+func (v PortPhyControl) Set(unit int, port Port, value uint32) error {
+	return PortPhyControlSet(unit, port, v, value)
+}
+
+//
 // PortControl
 //
 type PortControl C.opennsl_port_control_t
@@ -123,4 +166,12 @@ func (v Port) PortControlsSet(unit int, entries ...*PortControlEntry) error {
 
 func (v Port) PortControlGet(unit int, ctrl PortControl) (int, error) {
 	return ctrl.Get(unit, v)
+}
+
+func (v Port) PhyControlSet(unit int, ctrl PortPhyControl, value uint32) error {
+	return PortPhyControlSet(unit, v, ctrl, value)
+}
+
+func (v Port) PhyControlGet(unit int, ctrl PortPhyControl) (uint32, error) {
+	return PortPhyControlGet(unit, v, ctrl)
 }
