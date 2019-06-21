@@ -139,7 +139,8 @@ am_libopennsl_la_OBJECTS = libopennsl_la-version.lo \
 	libopennsl_la-rx.lo libopennsl_la-tx.lo libopennsl_la-pkt.lo \
 	libopennsl_la-trunk.lo libopennsl_la-stat.lo \
 	libopennsl_la-cosq.lo libopennsl_la-bitop.lo \
-	libopennsl_la-mirror.lo libopennsl_la-libopennsl.lo
+	libopennsl_la-mirror.lo libopennsl_la-pbmp.lo \
+	libopennsl_la-libopennsl.lo
 libopennsl_la_OBJECTS = $(am_libopennsl_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -355,6 +356,7 @@ libopennsl_la_SOURCES = \
 	cosq.c \
 	bitop.c \
 	mirror.c \
+	pbmp.c \
 	libopennsl.c
 
 libopennsl_la_CFLAGS = `pkg-config --cflags libopennsl`
@@ -451,6 +453,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libopennsl_la-mirror.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libopennsl_la-mpls.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libopennsl_la-multicast.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libopennsl_la-pbmp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libopennsl_la-pkt.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libopennsl_la-port.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libopennsl_la-rx.Plo@am__quote@
@@ -667,6 +670,13 @@ libopennsl_la-mirror.lo: mirror.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mirror.c' object='libopennsl_la-mirror.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libopennsl_la_CFLAGS) $(CFLAGS) -c -o libopennsl_la-mirror.lo `test -f 'mirror.c' || echo '$(srcdir)/'`mirror.c
+
+libopennsl_la-pbmp.lo: pbmp.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libopennsl_la_CFLAGS) $(CFLAGS) -MT libopennsl_la-pbmp.lo -MD -MP -MF $(DEPDIR)/libopennsl_la-pbmp.Tpo -c -o libopennsl_la-pbmp.lo `test -f 'pbmp.c' || echo '$(srcdir)/'`pbmp.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libopennsl_la-pbmp.Tpo $(DEPDIR)/libopennsl_la-pbmp.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='pbmp.c' object='libopennsl_la-pbmp.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libopennsl_la_CFLAGS) $(CFLAGS) -c -o libopennsl_la-pbmp.lo `test -f 'pbmp.c' || echo '$(srcdir)/'`pbmp.c
 
 libopennsl_la-libopennsl.lo: libopennsl.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libopennsl_la_CFLAGS) $(CFLAGS) -MT libopennsl_la-libopennsl.lo -MD -MP -MF $(DEPDIR)/libopennsl_la-libopennsl.Tpo -c -o libopennsl_la-libopennsl.lo `test -f 'libopennsl.c' || echo '$(srcdir)/'`libopennsl.c
