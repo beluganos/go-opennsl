@@ -1,0 +1,13 @@
+---
+
+vlans:
+  - id: 10
+    access_port: [1]
+    trunk_port: [2]
+    native_tag_port: []
+    native_untag_port: []
+  - id: 20
+    access_port: [3, 4]
+    trunk_port: [2]
+    native_tag_port: []
+    native_untag_port: []
