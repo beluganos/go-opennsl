@@ -77,13 +77,13 @@ var l2flags_names = map[L2Flags]string{
 	L2_COPY_TO_CPU:  "L2_COPY_TO_CPU",
 	L2_L3LOOKUP:     "L2_L3LOOKUP",
 	L2_STATIC:       "L2_STATIC",
-	L2_HIT:          "L2_HIT",
 	L2_TRUNK_MEMBER: "L2_TRUNK_MEMBER",
 	L2_MCAST:        "L2_MCAST",
 	L2_SRC_HIT:      "L2_SRC_HIT",
 	L2_DES_HIT:      "L2_DES_HIT",
 	L2_MOVE_PORT:    "L2_MOVE_PORT",
 	L2_LOCAL_CPU:    "L2_LOCAL_CPU",
+	// L2_HIT:          "L2_HIT",
 }
 
 var l2flags_values = map[string]L2Flags{

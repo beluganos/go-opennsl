@@ -173,6 +173,14 @@ func (v *L2CacheAddr) SetEtherTypeMask(mask Ethertype) {
 	v.ethertype_mask = mask.C()
 }
 
+func (v *L2CacheAddr) Vlan() Vlan {
+	return Vlan(v.vlan)
+}
+
+func (v *L2CacheAddr) SetVlan(vlan Vlan) {
+	v.vlan = vlan.C()
+}
+
 //
 // API
 //

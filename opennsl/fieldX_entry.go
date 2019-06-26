@@ -93,13 +93,13 @@ func (v FieldGroup) EntryMultiGet(unit int, maxSize int) ([]FieldEntry, error) {
 	return FieldGroupEntryMultiGet(unit, v, maxSize)
 }
 
-func FieldEntryDestyroy(unit int, v FieldEntry) error {
+func FieldEntryDestroy(unit int, v FieldEntry) error {
 	rc := C.opennsl_field_entry_destroy(C.int(unit), v.C())
 	return ParseError(rc)
 }
 
-func (v FieldEntry) Destyroy(unit int) error {
-	return FieldEntryDestyroy(unit, v)
+func (v FieldEntry) Destroy(unit int) error {
+	return FieldEntryDestroy(unit, v)
 }
 
 func FieldEntryDestroyAll(unit int) error {

@@ -79,10 +79,36 @@ extern "C" {
   void _opennsl_pbmp_clear(opennsl_pbmp_t* pbmp);
   // OPENNSL_PBMP_MEMBER
   int _opennsl_pbmp_member(opennsl_pbmp_t* pbmp, int port);
-  // OPENNSL_PBMP_PORT_SET
+  // OPENNSL_PBMP_COUNT
+  int _opennsl_pbmp_count(opennsl_pbmp_t* pbmp);
+  // OPENNSL_PBMP_IS_NULL (is bitmap b empty?)
+  int _opennsl_pbmp_is_null(opennsl_pbmp_t* pbmp);
+  // OPENNSL_PBMP_NOT_NULL (is bitmap b not empty?)
+  int _opennsl_pbmp_is_not_null(opennsl_pbmp_t* pbmp);
+  // OPENNSL_PBMP_EQ(re bitmaps b1 and b2 equal?)
+  int _opennsl_pbmp_eq(opennsl_pbmp_t* pbmp1, opennsl_pbmp_t*pbmp2);
+  // OPENNSL_PBMP_NEQ (are bitmaps b1 and b2 not equal?)
+  int _opennsl_pbmp_neq(opennsl_pbmp_t* pbmp1, opennsl_pbmp_t*pbmp2);
+  // OPENNSL_PBMP_ASSIGN (copy bitmap b2 into b1)
+  void _opennsl_pbmp_assign(opennsl_pbmp_t* dst, opennsl_pbmp_t* src);
+  // OPENNSL_PBMP_AND (pbmp1 &= pbmp2)
+  void _opennsl_pbmp_and(opennsl_pbmp_t* pbmp1, opennsl_pbmp_t* pbmp2);
+  // OPENNSL_PBMP_OR (pbmp1 |= pbmp2)
+  void _opennsl_pbmp_or(opennsl_pbmp_t* pbmp1, opennsl_pbmp_t* pbmp2);
+  // OPENNSL_PBMP_XOR (pbmp1 ^= pbmp2)
+  void _opennsl_pbmp_xor(opennsl_pbmp_t* pbmp1, opennsl_pbmp_t* pbmp2);
+  // OPENNSL_PBMP_REMOVE (remove bits in bitmap b2 from b1)
+  void _opennsl_pbmp_remove(opennsl_pbmp_t* pbmp1, opennsl_pbmp_t* pbmp2);
+  // OPENNSL_PBMP_NEGATE (pbmp1 = ~pbmp2)
+  void _opennsl_pbmp_negate(opennsl_pbmp_t* pbmp1, opennsl_pbmp_t* pbmp2);
+  // OPENNSL_PBMP_PORT_SET (clear bitmap b, then turn bit p on)
   void _opennsl_pbmp_port_set(opennsl_pbmp_t* pbmp, int port);
-  // OPENNSL_PBMP_PORT_ADD
+  // OPENNSL_PBMP_PORT_ADD (turn bit p on in bitmap b)
   void _opennsl_pbmp_port_add(opennsl_pbmp_t* pbmp, int port);
+  // OPENNSL_PBMP_PORT_REMOVE (turn bit p off in bitmap b)
+  void _opennsl_pbmp_port_remove(opennsl_pbmp_t* pbmp, int port);
+  // OPENNSL_PBMP_PORT_FLIP (flip the sense of bit p on in bitmap b)
+  void _opennsl_pbmp_port_flip(opennsl_pbmp_t* pbmp, int port);
   // OPENNSL_FIELD_QSET_INIT
   void _opennsl_field_qset_init(opennsl_field_qset_t* qset);
   // OPENNSL_FIELD_QSET_ADD

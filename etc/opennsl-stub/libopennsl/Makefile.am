@@ -27,6 +27,7 @@ libopennsl_la_SOURCES = \
 	cosq.c \
 	bitop.c \
 	mirror.c \
+	pbmp.c \
 	libopennsl.c
 
 libopennsl_la_CFLAGS = `pkg-config --cflags libopennsl`

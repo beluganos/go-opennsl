@@ -1,6 +1,9 @@
 // -*- coding: utf-8 -*-
 
+#include <stdlib.h>
 #include <string.h>
+#include <pthread.h>
+#include <sys/time.h>
 #include <opennsl/error.h>
 #include <opennsl/l2.h>
 #include "libopennsl.h"
@@ -28,6 +31,8 @@ static _opennsl_l2_addr_entry_t* _opennsl_l2_addr_entry_get(const opennsl_mac_t 
 
   return NULL;
 }
+
+static int s_age_seconds = 0;
 
 typedef struct _opennsl_l2_station_entry {
   int station_id;
@@ -220,30 +225,180 @@ int opennsl_l2_addr_get(int unit, opennsl_mac_t mac_addr, opennsl_vlan_t vid, op
   return OPENNSL_E_NONE;
 }
 
+typedef struct _opennsl_l2_addr_info {
+  pthread_t tid;
+  int status;
+  int unit;
+  void* userdata;
+  opennsl_l2_addr_callback_t callback;
+  uint32 data_num;
+  long wait_sec;
+
+  pthread_mutex_t mtx;
+  pthread_cond_t  cond;
+} _opennsl_l2_addr_info_t;
+
+static opennsl_l2_addr_t* _opennsl_l2_addr_data_create(uint32 num) {
+  opennsl_l2_addr_t* datas = (opennsl_l2_addr_t*)malloc(sizeof(opennsl_l2_addr_t) * num);
+
+  opennsl_mac_t mac;
+  mac[0] = 0x00;
+  mac[1] = 0x11;
+
+  uint32 index;
+  for (index = 0; index < num; index++) {
+    opennsl_l2_addr_t* data = datas + index;
+
+    mac[2] = (uint8)((index & 0xff000000) >> 24);
+    mac[3] = (uint8)((index & 0x00ff0000) >> 16);
+    mac[4] = (uint8)((index & 0x0000ff00) >> 8);
+    mac[5] = (uint8)((index & 0x000000ff) >> 0);
+
+    data->port = index + 1;
+    data->vid = index + 11;
+    memcpy(data->mac, mac, 6);
+  }
+
+  return datas;
+}
+
+static void _opennsl_l2_addr_data_destroy(opennsl_l2_addr_t* datas) {
+  if (datas != NULL)
+    free(datas);
+}
+
+static int _opennsl_l2_addr_oper_next(int oper) {
+  switch(oper) {
+  case OPENNSL_L2_CALLBACK_ADD:
+    return OPENNSL_L2_CALLBACK_DELETE;
+
+  case OPENNSL_L2_CALLBACK_DELETE:
+    return OPENNSL_L2_CALLBACK_LEARN_EVENT;
+
+  default:
+    return OPENNSL_L2_CALLBACK_ADD;
+  }
+}
+
+static void* _opennsl_l2_addr_main(void* arg) {
+
+  _opennsl_l2_addr_info_t* const info = (_opennsl_l2_addr_info_t*)arg;
+  opennsl_l2_addr_t* const datas = _opennsl_l2_addr_data_create(info->data_num);
+
+  int oper = OPENNSL_L2_CALLBACK_ADD;
+
+  pthread_mutex_lock(&info->mtx);
+  while(1) {
+    printf("_opennsl_l2_addr_main: slepp...%ld\n", info->wait_sec);
+
+    struct timeval now;
+    struct timespec timeout;
+    gettimeofday(&now, NULL);
+    timeout.tv_sec = now.tv_sec + info->wait_sec;
+    timeout.tv_nsec = 0;
+    pthread_cond_timedwait(&info->cond, &info->mtx, &timeout);
+
+    if (info->status == 0) {
+      printf("_opennsl_l2_addr_main: exit\n");
+      break;
+    }
+
+    printf("_opennsl_l2_addr_main: callback #%d ope:%d\n", info->data_num, oper);
+
+    int index;
+    for (index = 0; index < info->data_num; index++) {
+      info->callback(info->unit, datas + index, oper, info->userdata);
+    }
+
+    oper = _opennsl_l2_addr_oper_next(oper);
+  }
+  pthread_mutex_unlock(&info->mtx);
+
+  _opennsl_l2_addr_data_destroy(datas);
+}
+
+static _opennsl_l2_addr_info_t s_opennsl_l2_addr_info = {0, 0, 0, NULL, NULL};
+
+static void _opennsl_l2_addr_callback_env(uint32* data_num, long* wait_sec) {
+  const char* env;
+
+  if ((env = getenv("OPENNSL_STUB_L2ADDR_NUM")) != NULL) {
+    *data_num = atoi(env);
+  }
+
+  if ((*data_num) < 1)
+    *data_num = 1;
+
+  if ((env = getenv("OPENNSL_STUB_L2ADDR_WAIT_SEC")) != NULL) {
+    *wait_sec = atoi(env);
+  }
+
+  if ((*wait_sec) < 1)
+    *wait_sec = 3600;
+}
+
 int opennsl_l2_addr_register(int unit, opennsl_l2_addr_callback_t callback, void *userdata) {
   LOG_DEBUG("%s: unit     = %d", __func__, unit);
   LOG_DEBUG("%s: cakkback = %p", __func__, callback);
   LOG_DEBUG("%s: userdata = %p", __func__, userdata);
-  return OPENNSL_E_UNAVAIL;
+
+  if (s_opennsl_l2_addr_info.status != 0)
+    return OPENNSL_E_INTERNAL;
+
+  s_opennsl_l2_addr_info.status = 1;
+  s_opennsl_l2_addr_info.unit = unit;
+  s_opennsl_l2_addr_info.userdata = userdata;
+  s_opennsl_l2_addr_info.callback = callback;
+  _opennsl_l2_addr_callback_env(&s_opennsl_l2_addr_info.data_num,
+				&s_opennsl_l2_addr_info.wait_sec);
+
+  pthread_cond_init(&s_opennsl_l2_addr_info.cond, NULL);
+  pthread_mutex_init(&s_opennsl_l2_addr_info.mtx, NULL);
+
+  int rc = pthread_create(&s_opennsl_l2_addr_info.tid,
+			  NULL,
+			  _opennsl_l2_addr_main,
+			  &s_opennsl_l2_addr_info);
+  if (rc != 0)
+    return OPENNSL_E_INTERNAL;
+
+  return OPENNSL_E_NONE;
 }
 
 int opennsl_l2_addr_unregister(int unit, opennsl_l2_addr_callback_t callback, void *userdata) {
   LOG_DEBUG("%s: unit     = %d", __func__, unit);
   LOG_DEBUG("%s: cakkback = %p", __func__, callback);
   LOG_DEBUG("%s: userdata = %p", __func__, userdata);
-  return OPENNSL_E_UNAVAIL;
+
+  if (s_opennsl_l2_addr_info.status == 0)
+    return OPENNSL_E_INTERNAL;
+
+  s_opennsl_l2_addr_info.status = 0;
+  pthread_cond_signal(&s_opennsl_l2_addr_info.cond);
+
+  s_opennsl_l2_addr_info.tid = 0;
+  
+  return OPENNSL_E_NONE;
 }
 
 int opennsl_l2_age_timer_set(int unit, int age_seconds) {
   LOG_DEBUG("%s: unit     = %d", __func__, unit);
   LOG_DEBUG("%s: age      = %d", __func__, age_seconds);
-  return OPENNSL_E_UNAVAIL;
+  if (age_seconds < 0) {
+    return OPENNSL_E_UNAVAIL;
+  }
+  s_age_seconds = age_seconds;
+  return OPENNSL_E_NONE;
 }
 
 int opennsl_l2_age_timer_get(int unit, int *age_seconds) {
   LOG_DEBUG("%s: unit     = %d", __func__, unit);
   LOG_DEBUG("%s: age      = %p", __func__, age_seconds);
-  return OPENNSL_E_UNAVAIL;
+  if (s_age_seconds < 0) {
+    return OPENNSL_E_UNAVAIL;
+  }
+  *age_seconds = s_age_seconds;
+  return OPENNSL_E_NONE;
 }
 
 int opennsl_l2_addr_freeze(int unit) {
