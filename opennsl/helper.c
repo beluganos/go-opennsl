@@ -89,12 +89,66 @@ int _opennsl_pbmp_member(opennsl_pbmp_t* pbmp, int port) {
   return OPENNSL_PBMP_MEMBER((*pbmp), port);
 }
 
+int _opennsl_pbmp_count(opennsl_pbmp_t* pbmp) {
+  int count;
+  OPENNSL_PBMP_COUNT(*pbmp, count);
+  return count;
+}
+
+int _opennsl_pbmp_is_null(opennsl_pbmp_t* pbmp) {
+  return OPENNSL_PBMP_IS_NULL(*pbmp);
+}
+
+int _opennsl_pbmp_is_not_null(opennsl_pbmp_t* pbmp) {
+  return OPENNSL_PBMP_NOT_NULL(*pbmp);
+}
+
+int _opennsl_pbmp_eq(opennsl_pbmp_t* pbmp1, opennsl_pbmp_t*pbmp2) {
+  return OPENNSL_PBMP_EQ(*pbmp1, *pbmp2);
+}
+
+int _opennsl_pbmp_neq(opennsl_pbmp_t* pbmp1, opennsl_pbmp_t*pbmp2) {
+  return OPENNSL_PBMP_NEQ(*pbmp1, *pbmp2);
+}
+
+void _opennsl_pbmp_assign(opennsl_pbmp_t* dst, opennsl_pbmp_t* src) {
+  OPENNSL_PBMP_ASSIGN(*dst, *src);
+}
+
+void _opennsl_pbmp_and(opennsl_pbmp_t* pbmp1, opennsl_pbmp_t* pbmp2) {
+  OPENNSL_PBMP_AND(*pbmp1, *pbmp2);
+}
+
+void _opennsl_pbmp_or(opennsl_pbmp_t* pbmp1, opennsl_pbmp_t* pbmp2) {
+  OPENNSL_PBMP_OR(*pbmp1, *pbmp2);
+}
+
+void _opennsl_pbmp_xor(opennsl_pbmp_t* pbmp1, opennsl_pbmp_t* pbmp2) {
+  OPENNSL_PBMP_XOR(*pbmp1, *pbmp2);
+}
+
+void _opennsl_pbmp_remove(opennsl_pbmp_t* pbmp1, opennsl_pbmp_t* pbmp2) {
+  OPENNSL_PBMP_REMOVE(*pbmp1, *pbmp2);
+}
+
+void _opennsl_pbmp_negate(opennsl_pbmp_t* pbmp1, opennsl_pbmp_t* pbmp2) {
+  OPENNSL_PBMP_NEGATE(*pbmp1, *pbmp2);
+}
+
 void _opennsl_pbmp_port_set(opennsl_pbmp_t* pbmp, int port) {
   OPENNSL_PBMP_PORT_SET((*pbmp), port);
 }
 
 void _opennsl_pbmp_port_add(opennsl_pbmp_t* pbmp, int port) {
   OPENNSL_PBMP_PORT_ADD((*pbmp), port);
+}
+
+void _opennsl_pbmp_port_remove(opennsl_pbmp_t* pbmp, int port) {
+  OPENNSL_PBMP_PORT_REMOVE(*pbmp, port);
+}
+
+void _opennsl_pbmp_port_flip(opennsl_pbmp_t* pbmp, int port) {
+  OPENNSL_PBMP_PORT_FLIP(*pbmp, port);
 }
 
 void _opennsl_field_qset_init(opennsl_field_qset_t* qset) {

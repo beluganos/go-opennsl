@@ -210,7 +210,7 @@ int opennsl_vlan_control_set(int unit, opennsl_vlan_control_t type, int arg) {
   LOG_DEBUG("%s: type = %d", __func__, type);
   LOG_DEBUG("%s: arg  = %d", __func__, arg);
 
-  return OPENNSL_E_UNAVAIL;
+  return OPENNSL_E_NONE;
 }
 
 int opennsl_vlan_control_port_set(int unit, int port, opennsl_vlan_control_port_t type, int arg) {
@@ -219,7 +219,7 @@ int opennsl_vlan_control_port_set(int unit, int port, opennsl_vlan_control_port_
   LOG_DEBUG("%s: type = %d", __func__, type);
   LOG_DEBUG("%s: arg  = %d", __func__, arg);
 
-  return OPENNSL_E_UNAVAIL;
+  return OPENNSL_E_NONE;
 }
 
 int opennsl_vlan_stat_get(int unit, opennsl_vlan_t vlan, opennsl_cos_t cos, opennsl_vlan_stat_t stat, uint64 *val) {

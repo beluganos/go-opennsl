@@ -43,20 +43,6 @@ func (v *PBmp) C() *C.opennsl_pbmp_t {
 	return (*C.opennsl_pbmp_t)(v)
 }
 
-func (v *PBmp) Add(ports ...Port) {
-	for _, port := range ports {
-		C._opennsl_pbmp_port_add(v.C(), port.C())
-	}
-}
-
-func (v *PBmp) Set(port Port) {
-	C._opennsl_pbmp_port_set(v.C(), port.C())
-}
-
-func (v *PBmp) Clear() {
-	C._opennsl_pbmp_clear(v.C())
-}
-
 func (v *PBmp) String() string {
 	ports := make([]uint32, 0)
 	for index, bits := range v.PBits() {
@@ -85,6 +71,84 @@ func (v *PBmp) Init() *PBmp {
 
 func (v *PBmp) Has(port Port) bool {
 	return C._opennsl_pbmp_member(v.C(), port.C()) != 0
+}
+
+func (v *PBmp) Count() int {
+	cnt := C._opennsl_pbmp_count(v.C())
+	return int(cnt)
+}
+
+func (v *PBmp) IsNull() bool {
+	rv := C._opennsl_pbmp_is_null(v.C())
+	return (rv != 0)
+}
+
+func (v *PBmp) IsNotNull() bool {
+	rv := C._opennsl_pbmp_is_not_null(v.C())
+	return (rv != 0)
+}
+
+func (v *PBmp) Equal(pbmp *PBmp) bool {
+	rv := C._opennsl_pbmp_eq(v.C(), pbmp.C())
+	return (rv != 0)
+}
+
+func (v *PBmp) NotEqual(pbmp *PBmp) bool {
+	rv := C._opennsl_pbmp_neq(v.C(), pbmp.C())
+	return (rv != 0)
+}
+
+func (v *PBmp) Assign(src *PBmp) *PBmp {
+	C._opennsl_pbmp_assign(v.C(), src.C())
+	return v
+}
+
+func (v *PBmp) AND(pbmp *PBmp) *PBmp {
+	C._opennsl_pbmp_and(v.C(), pbmp.C())
+	return v
+}
+
+func (v *PBmp) OR(pbmp *PBmp) *PBmp {
+	C._opennsl_pbmp_or(v.C(), pbmp.C())
+	return v
+}
+
+func (v *PBmp) XOR(pbmp *PBmp) *PBmp {
+	C._opennsl_pbmp_xor(v.C(), pbmp.C())
+	return v
+}
+
+func (v *PBmp) RemovePorts(pbmp *PBmp) *PBmp {
+	C._opennsl_pbmp_remove(v.C(), pbmp.C())
+	return v
+}
+
+func (v *PBmp) Negate(pbmp *PBmp) *PBmp {
+	C._opennsl_pbmp_negate(v.C(), pbmp.C())
+	return v
+}
+
+func (v *PBmp) Set(port Port) {
+	C._opennsl_pbmp_port_set(v.C(), port.C())
+}
+
+func (v *PBmp) Add(ports ...Port) *PBmp {
+	for _, port := range ports {
+		C._opennsl_pbmp_port_add(v.C(), port.C())
+	}
+	return v
+}
+
+func (v *PBmp) Remove(ports ...Port) *PBmp {
+	for _, port := range ports {
+		C._opennsl_pbmp_port_remove(v.C(), port.C())
+	}
+	return v
+}
+
+func (v *PBmp) Clear() *PBmp {
+	C._opennsl_pbmp_clear(v.C())
+	return v
 }
 
 func (v *PBmp) Each(f func(Port) error) error {
