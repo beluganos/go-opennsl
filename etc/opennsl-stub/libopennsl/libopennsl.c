@@ -1,6 +1,7 @@
 // -*- coding: utf-8 -*-
 
 #include <stdio.h>
+#include <memory.h>
 #include <opennsl/types.h>
 #include "logger.h"
 #include "libopennsl.h"
@@ -612,4 +613,8 @@ void _opennsl_tunnel_terminator_dump(const char* name, const opennsl_tunnel_term
   LOG_DEBUG("%s: tun_init.mcact_flag   = %08x", name, tun->multicast_flag);
   LOG_DEBUG("%s: tun_init.qos_map_id   = %d", name, tun->qos_map_id);
   _opennsl_pbmp_dump(name, &tun->pbmp);
+}
+
+int _opennsl_ip6_cmp(const opennsl_ip6_t ip1, const opennsl_ip6_t ip2) {
+  return memcmp(ip1, ip2, sizeof(opennsl_ip6_t));
 }

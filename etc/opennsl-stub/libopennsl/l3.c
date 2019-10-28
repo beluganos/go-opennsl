@@ -662,6 +662,26 @@ int opennsl_l3_route_delete(int unit, opennsl_l3_route_t *info) {
   LOG_DEBUG("%s: unit       = %d", __func__, unit);
   _opennsl_l3_route_dump(__func__, info);
 
+  if ((info->l3a_flags & OPENNSL_L3_IP6) == 0) {
+    _opennsl_l3_route_entry_t* const entry =
+      _opennsl_l3_route4_entry_get(info->l3a_subnet, info->l3a_ip_mask, info->l3a_vrf);
+
+    if (entry == NULL)
+      return OPENNSL_E_NOT_FOUND;
+
+    entry->id = 0;
+
+  } else {
+    _opennsl_l3_route_entry_t* const entry =
+        _opennsl_l3_route6_entry_get(info->l3a_ip6_net, info->l3a_ip6_mask, info->l3a_vrf);
+
+    if (entry == NULL)
+      return OPENNSL_E_NOT_FOUND;
+
+    entry->id = 0;
+
+  }
+
   return OPENNSL_E_NONE;
 }
 

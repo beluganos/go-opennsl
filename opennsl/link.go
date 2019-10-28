@@ -39,18 +39,18 @@ func (v LinkStatus) C() C.int {
 }
 
 const (
-	LINK_STATUS_DOWN LinkStatus = 0
+	LINK_STATUS_UP LinkStatus = C.OPENNSL_PORT_LINK_STATUS_UP
 )
 
 func (v LinkStatus) IsUp() bool {
-	return (v != LINK_STATUS_DOWN)
+	return (v == LINK_STATUS_UP)
 }
 
 func (v LinkStatus) String() string {
-	if v == LINK_STATUS_DOWN {
-		return "DOWN"
-	} else {
+	if v == LINK_STATUS_UP {
 		return "UP"
+	} else {
+		return "DOWN"
 	}
 }
 

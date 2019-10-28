@@ -69,9 +69,15 @@ static _opennsl_tunnel_terminator_entry_t* _opennsl_tunnel_terminator_entry_get_
       continue;
     if ((info->dip_mask != entry->tunterm.dip_mask) || (info->sip_mask != entry->tunterm.sip_mask))
       continue;
-    if ((info->dip6 != entry->tunterm.dip6) || (info->sip6 != entry->tunterm.sip6))
+    if ((_opennsl_ip6_cmp(info->dip6, entry->tunterm.dip6) != 0) ||
+	(_opennsl_ip6_cmp(info->sip6, entry->tunterm.sip6) != 0))
       continue;
-    if ((info->dip6_mask != entry->tunterm.dip6_mask) || (info->sip6_mask != entry->tunterm.sip6_mask))
+    if ((_opennsl_ip6_cmp(info->dip6_mask, entry->tunterm.dip6_mask) != 0) ||
+	(_opennsl_ip6_cmp(info->sip6_mask, entry->tunterm.sip6_mask) != 0))
+      continue;
+    if (info->vlan != entry->tunterm.vlan)
+      continue;
+    if (info->vrf != entry->tunterm.vrf)
       continue;
 
     return entry;
@@ -129,7 +135,7 @@ int opennsl_tunnel_initiator_create(int unit, opennsl_l3_intf_t *intf, opennsl_t
   _opennsl_l3_intf_dump(__func__, intf);
   _opennsl_tunnel_initiator_dump(__func__, tunnel);
 
-  return OPENNSL_E_NONE;
+  return OPENNSL_E_UNAVAIL;
 }
 
 int opennsl_tunnel_initiator_clear(int unit,  opennsl_l3_intf_t *intf) {
@@ -220,7 +226,7 @@ int opennsl_tunnel_terminator_create(int unit, opennsl_tunnel_terminator_t *info
   LOG_DEBUG("%s: unit   = %d", __func__, unit);
   _opennsl_tunnel_terminator_dump(__func__, info);
 
-  return OPENNSL_E_NONE;
+  return OPENNSL_E_UNAVAIL;
 }
 
 int opennsl_tunnel_terminator_delete(int unit, opennsl_tunnel_terminator_t *info) {

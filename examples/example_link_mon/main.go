@@ -132,7 +132,7 @@ func main() {
 		log.Infof("Link Status Changed. port:%d status:%s", port, portInfo.LinkStatus())
 		go func() {
 			enable := func() opennsl.PortEnable {
-				if portInfo.LinkStatus() == opennsl.LINK_STATUS_DOWN {
+				if portInfo.LinkStatus() != opennsl.LINK_STATUS_UP {
 					return opennsl.PORT_ENABLE_TRUE
 				}
 				return opennsl.PORT_ENABLE_FALSE

@@ -84,4 +84,6 @@ void _opennsl_tunnel_initiator_dump(const char* name, const opennsl_tunnel_initi
 
 void _opennsl_tunnel_terminator_dump(const char* name, const opennsl_tunnel_terminator_t* tun);
 
+int _opennsl_ip6_cmp(const opennsl_ip6_t ip1, const opennsl_ip6_t ip2);
+
 #endif // __LIBOPENNSL_H
